@@ -1,0 +1,12 @@
+.app-wrapper {
+  width: 700px;
+  margin: 0 auto;
+}
+.app-title {
+  color: #26a69a;
+  text-align: center;
+  margin-bottom: 40px;
+}
+.app-todos-area {
+  margin-top: 30px;
+}
