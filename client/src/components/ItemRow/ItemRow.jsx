@@ -23,7 +23,7 @@ const ItemRow = ({id, isChecked, title, removeItem, handleComplete}) => {
               <input
               value={itemTitle}
               type="text"
-              className="validate"
+              className="validate item-input"
               onChange={(e) => setItemTitle(e.target.value)}/>}
           </label>
         </div>
