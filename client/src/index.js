@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 ReactDOM.render(
-  <React.Suspense>
+  <Suspense>
     <React.StrictMode>
       <App />
     </React.StrictMode>
-  </React.Suspense>,
+  </Suspense>,
   document.getElementById('root')
 );
 

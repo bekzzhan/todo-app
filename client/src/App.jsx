@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import Form from './components/Form/Form';
 import ToDoList from './components/TodoList/TodoList';
+import {Loader} from './components/Loader/Loader.tsx'
 import {useHttp} from './hooks/http.hook'
 
 function App() {
@@ -14,30 +15,32 @@ function App() {
         completedTodos: fetched.filter((item) => item.completed === true),
         unCompletedTodos: fetched.filter((item) => item.completed === false)
       })
-    } catch (e) {
-      throw e;
-    }
+    } catch (e) {}
   }, [request]);
 
   useEffect(() => {
     fetchTodos();
-  }, [fetchTodos])
-
+  }, [fetchTodos, request])
+  
   return (
     <div className='app-wrapper'>
       <div className='app-header'>
         <h2 className='app-title'>TODO App</h2>
       </div>
       <div className='app-content'>
-        <Form />
-        <div className='app-todos-area'>
-          <h5>TODO</h5>
-          {!loading && <ToDoList list={todos.unCompletedTodos}/>}
-        </div>
-        <div className='app-todos-area'>
-          <h5>Completed</h5>
-          {!loading && <ToDoList list={todos.completedTodos}/>}
-        </div>      
+        <Form fetchTodos={fetchTodos}/>
+        {loading ? <Loader /> : (
+          <>
+            <div className='app-todos-area'>
+              <h5>TODO</h5>
+              {todos.unCompletedTodos?.length === 0 ? 'No todos' : <ToDoList list={todos.unCompletedTodos} fetchTodos={fetchTodos}/>}
+            </div>
+            <div className='app-todos-area'>
+              <h5>Completed</h5>
+              {todos.completedTodos?.length === 0 ? 'No todos' : <ToDoList list={todos.completedTodos} fetchTodos={fetchTodos}/>}
+            </div>
+          </>   
+        )}   
       </div>
     </div>
   );

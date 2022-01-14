@@ -11,3 +11,7 @@
   color: #ffffff;
   font-size: 18px;
 }
+
+.disabled {
+  background-color: gray;
+}

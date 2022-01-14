@@ -3,6 +3,7 @@ const path = require('path');
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const port = process.env.PORT || 8080;
 const mongoUri = 'mongodb+srv://bekzzhan:qwerty123456@cluster0.ex3xy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
@@ -22,14 +23,14 @@ const filePath = "todos.json";
 //   }
 // }
 
-const todos = [
+let todos = [
   {
-    id: 1,
+    id: uuidv4(),
     title: 'Купить хлеб',
     completed: false,
   },
   {
-    id: 1,
+    id: uuidv4(),
     title: 'Купить молоко',
     completed: false,
   }
@@ -39,25 +40,53 @@ app.use(cors());
 
 app.get('/todos', (req, res) => {
   try {
-    res.json(todos)
+    res.json(todos);
   } catch (e) {
-    res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+    res.status(500).json({ message: 'Something went wrong. Try it again.' });
   }
 })
 
-app.get('/todos/:id', (req, res) => {
-  const id = req.params.id;
-  const content = fs.readFile(filePath, (err, data) => {
-    if (err) throw err;
-    return Buffer(data, 'utf-8');
-  });
-  const todo = JSON.parse(content.find((item) => item.id = id));
-  res.send(todo);
+app.post('/todos', (req, res) => {
+  try {
+    const id = uuidv4();
+    const {title, completed} = req.body;
+    const item = {id, title, completed};
+    todos.push(item);
+    res.json(item).status(201);
+  } catch (e) {
+    res.status(500).json({ message: 'Something went wrong. Try it again.' });
+  }
 })
 
+app.delete('/todos/:id', (req, res) => {
+  try {
+    const id = req.params.id;
+    const item = todos.find((item) => item.id == id);
+    todos.splice(todos.indexOf(item), 1);
+    res.status(200).json({message: `Todo ${id} was removed`});
+  } catch (e) {
+    res.status(500).json({ message: 'Something went wrong. Try it again.'});
+  }
+});
 
+app.patch('/todos/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const title = req.body.title;
+    const completed = req.body.completed;
+    const item = todos.find((item) => item.id == id);
+    if (typeof(completed) !== 'undefined') {
+      item.completed = completed;
+    }
+    if (title) {
+      item.title = title;
+    }
+    res.json(item);
+  } catch (e) {
+    res.status(500).json({ message: 'Something went wront. Try it again.' });
+    throw e
 
-
-// start();
+  }
+}) 
 
 app.listen(port, () => console.log(`Listening on port ${port}...`))
